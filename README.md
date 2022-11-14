@@ -1,2 +1,2 @@
 # crm-cti-project
-Custom Relation Management - Computer Telephony Integration Program
+Custom Relation Management - Computer Telephony Integration
