@@ -1,6 +1,8 @@
-package com.brogs.crm.domain;
+package com.brogs.crm.domain.message;
 
+import com.brogs.crm.domain.Ticket;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,7 +30,8 @@ public class Message {
     @JoinColumn(name = "ticket_id")
     private Ticket ticket;
 
-    private Message(String sender, String content, String attachment, String channel, boolean innerMemo, LocalDateTime sendTime) {
+    @Builder
+    public Message(String sender, String content, String attachment, String channel, boolean innerMemo, LocalDateTime sendTime) {
         this.sender = sender;
         this.content = content;
         this.attachment = attachment;
@@ -38,12 +41,4 @@ public class Message {
         this.sendTime = sendTime;
     }
 
-    public static Message of(String sender,
-                             String content,
-                             String attachment,
-                             String channel,
-                             boolean innerMemo,
-                             LocalDateTime sendTime) {
-        return new Message(sender, content, attachment, channel, innerMemo, sendTime);
-    }
 }

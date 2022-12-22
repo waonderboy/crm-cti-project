@@ -1,9 +1,10 @@
-package com.brogs.crm.domain;
+package com.brogs.crm.domain.hashtag;
 
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @EqualsAndHashCode(of = "id")
 @NoArgsConstructor
@@ -14,13 +15,11 @@ public class Hashtag {
     @Column(name = "hashtag_id")
     private Long id;
     @Column(unique = true, nullable = false)
+    @Setter
     private String title;
 
     private Hashtag(String title) {
         this.title = title;
     }
 
-    public static Hashtag of(String title){
-        return new Hashtag(title);
-    }
 }

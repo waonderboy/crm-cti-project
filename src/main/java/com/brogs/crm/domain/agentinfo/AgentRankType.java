@@ -1,4 +1,4 @@
-package com.brogs.crm.domain.constant;
+package com.brogs.crm.domain.agentinfo;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

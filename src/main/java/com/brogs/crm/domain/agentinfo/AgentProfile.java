@@ -1,17 +1,21 @@
-package com.brogs.crm.domain;
+package com.brogs.crm.domain.agentinfo;
 
-import com.brogs.crm.domain.constant.AgentRankType;
+import com.brogs.crm.domain.AbstractEntity;
+import com.brogs.crm.domain.group.Group;
+import com.brogs.crm.domain.Ticket;
+import com.brogs.crm.domain.agentaccount.AgentAccount;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-@EqualsAndHashCode(of = "id")
+
+@EqualsAndHashCode(of = "id", callSuper = false)
 @NoArgsConstructor
 @Entity @Getter
-public class AgentInfo extends AbstractEntity{
+public class AgentProfile extends AbstractEntity {
 
     @Id @GeneratedValue
-    @Column(name = "agent_info_id")
+    @Column(name = "agent_profile_id")
     private Long id;
     private String name;
     private String email;
@@ -30,17 +34,17 @@ public class AgentInfo extends AbstractEntity{
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "agent_account_id")
-    private  AgentAccount agentAccount;
+    private AgentAccount agentAccount;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id")
     private Group group;
 
-    @OneToOne(mappedBy = "agentInfo")
+    @OneToOne(mappedBy = "agentProfile")
     private Ticket ticket;
 
     @Builder
-    public AgentInfo(String name,
+    public AgentProfile(String name,
                      String email,
                      int age,
                      AgentRankType rank,

@@ -1,7 +1,9 @@
-package com.brogs.crm.domain;
+package com.brogs.crm.domain.alarm;
 
-import com.brogs.crm.domain.constant.ReadStatusType;
+import com.brogs.crm.domain.agentaccount.AgentAccount;
+import com.brogs.crm.domain.message.ReadStatusType;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,17 +26,14 @@ public class Alarm {
     @JoinColumn(name = "agent_account_id")
     private AgentAccount agentAccount;
 
-
-    private Alarm(String targetId, String content, ReadStatusType readStatus) {
+    @Builder
+    public Alarm(String targetId,
+                 String content,
+                 ReadStatusType readStatus) {
         this.targetId = targetId;
         this.content = content;
         this.readStatus = readStatus;
         this.createdAt = LocalDateTime.now();
     }
 
-    public static Alarm of(String targetId,
-                           String content,
-                           ReadStatusType readStatus) {
-        return new Alarm(targetId, content, readStatus);
-    }
 }

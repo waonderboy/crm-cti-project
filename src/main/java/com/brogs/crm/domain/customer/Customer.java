@@ -1,15 +1,18 @@
-package com.brogs.crm.domain;
+package com.brogs.crm.domain.customer;
 
+import com.brogs.crm.domain.AbstractEntity;
+import com.brogs.crm.domain.agentinfo.AgentProfile;
+import com.brogs.crm.domain.hashtag.Hashtag;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode(of = "id", callSuper = false)
 @NoArgsConstructor
 @Entity @Getter
-public class Customer extends AbstractEntity{
+public class Customer extends AbstractEntity {
 
     @Id @GeneratedValue
     @Column(name = "customer_id")
@@ -30,8 +33,8 @@ public class Customer extends AbstractEntity{
     private boolean kakaoTalkReception;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "agent_info_id")
-    private AgentInfo agentInfos;
+    @JoinColumn(name = "agent_profile_id")
+    private AgentProfile agentProfile;
 
     @JoinTable(
             name = "customer_hashtag",
@@ -42,7 +45,12 @@ public class Customer extends AbstractEntity{
     private Set<Hashtag> hashtags;
 
     @Builder
-    public Customer(String name, String email, String phoneNumber, String facebookId, String instagramId, String kakaoTalkId) {
+    public Customer(String name,
+                    String email,
+                    String phoneNumber,
+                    String facebookId,
+                    String instagramId,
+                    String kakaoTalkId) {
         //TODO: 예외처리
         this.name = name;
         this.email = email;
