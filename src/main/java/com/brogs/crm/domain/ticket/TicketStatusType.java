@@ -1,4 +1,4 @@
-package com.brogs.crm.domain.constant;
+package com.brogs.crm.domain.ticket;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

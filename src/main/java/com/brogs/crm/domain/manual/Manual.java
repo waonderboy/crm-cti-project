@@ -1,13 +1,16 @@
-package com.brogs.crm.domain;
+package com.brogs.crm.domain.manual;
 
+import com.brogs.crm.domain.AbstractEntity;
+import com.brogs.crm.domain.hashtag.Hashtag;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
-@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode(of = "id", callSuper = false)
 @NoArgsConstructor
 @Entity @Getter
 public class Manual extends AbstractEntity {
@@ -26,12 +29,10 @@ public class Manual extends AbstractEntity {
     @ManyToMany
     private Set<Hashtag> hashtags = new LinkedHashSet<>();
 
-    private Manual(String title, String content) {
+    @Builder
+    public Manual(String title, String content) {
         this.title = title;
         this.content = content;
     }
 
-    public static Manual of(String title, String content){
-        return new Manual(title, content);
-    }
 }

@@ -1,14 +1,17 @@
 package com.brogs.crm.domain;
 
-import com.brogs.crm.domain.constant.TicketPriorityType;
-import com.brogs.crm.domain.constant.TicketStatusType;
+import com.brogs.crm.domain.agentinfo.AgentProfile;
+import com.brogs.crm.domain.ticket.TicketPriorityType;
+import com.brogs.crm.domain.ticket.TicketStatusType;
+import com.brogs.crm.domain.customer.Customer;
+import com.brogs.crm.domain.hashtag.Hashtag;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode(of = "id", callSuper = false)
 @NoArgsConstructor
 @Entity @Getter
 public class Ticket extends AbstractEntity {
@@ -29,8 +32,8 @@ public class Ticket extends AbstractEntity {
     private Customer customer;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "agent_info_id")
-    private AgentInfo agentInfo;
+    @JoinColumn(name = "agent_profile_id")
+    private AgentProfile agentProfile;
 
 //    @OneToMany(mappedBy = "ticket")
 //    private List<Message> messages;

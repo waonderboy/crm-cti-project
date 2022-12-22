@@ -1,36 +1,35 @@
-package com.brogs.crm.domain;
+package com.brogs.crm.domain.ticketsummary;
 
+import com.brogs.crm.domain.AbstractEntity;
+import com.brogs.crm.domain.agentinfo.AgentProfile;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode(of = "id", callSuper = false)
 @NoArgsConstructor
 @Entity @Getter
 public class TicketSummaryComment extends AbstractEntity {
 
     @Id @GeneratedValue
-    @Column(name = "ticket_summary_id")
+    @Column(name = "ticket_summary_comment_id")
     private Long id;
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "agent_info_id")
-    private AgentInfo agentInfo;
+    private AgentProfile agentProfile;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ticket_summary_id")
     private TicketSummary ticketSummary;
 
-    private TicketSummaryComment(String content, AgentInfo agentInfo, TicketSummary ticketSummary) {
+    @Builder
+    public TicketSummaryComment(String content, AgentProfile agentProfile, TicketSummary ticketSummary) {
         this.content = content;
-        this.agentInfo = agentInfo;
+        this.agentProfile = agentProfile;
         this.ticketSummary = ticketSummary;
     }
 
-    public static TicketSummaryComment of(String content,
-                                   AgentInfo agentInfo,
-                                   TicketSummary ticketSummary) {
-        return new TicketSummaryComment(content, agentInfo, ticketSummary);
-    }
 }
