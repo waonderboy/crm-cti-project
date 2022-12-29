@@ -8,7 +8,6 @@ import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -100,12 +99,8 @@ public class JwtTokenProvider implements InitializingBean {
     }
 
     public boolean validateToken(String token) {
-        try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-            return true;
-        } catch (MalformedJwtException | UnsupportedJwtException | IllegalArgumentException | SignatureException ex) {
-            throw new InvalidCredentialsException();
-        }
+        return !parseClaims(token).isEmpty() ? true : false;
+
     }
 
     public String getSubject(String token) {
@@ -125,13 +120,15 @@ public class JwtTokenProvider implements InitializingBean {
     }
 
     private Claims parseClaims(String token) {
-        log.info("parse Token");
-        Claims claim = Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
-        return claim;
+        try {
+            return Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (MalformedJwtException | UnsupportedJwtException | IllegalArgumentException | SignatureException ex) {
+            throw new InvalidCredentialsException();
+        }
     }
 
     private long getCurrentTime() {
