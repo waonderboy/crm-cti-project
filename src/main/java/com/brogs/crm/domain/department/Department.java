@@ -1,4 +1,4 @@
-package com.brogs.crm.domain.group;
+package com.brogs.crm.domain.department;
 
 import com.brogs.crm.domain.AbstractEntity;
 import com.brogs.crm.domain.agentinfo.AgentProfile;
@@ -12,10 +12,10 @@ import java.util.Set;
 @EqualsAndHashCode(of = "id", callSuper = false)
 @NoArgsConstructor
 @Entity @Getter
-public class Group extends AbstractEntity {
+public class Department extends AbstractEntity {
 
     @Id @GeneratedValue
-    @Column(name = "group_id")
+    @Column(name = "department_id")
     private Long id;
     private String name;
     private String leader;
@@ -24,11 +24,11 @@ public class Group extends AbstractEntity {
     @JoinColumn(name = "company_id")
     private Company company;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "group")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "department")
     private Set<AgentProfile> agentProfiles;
 
     @Builder
-    public Group(String name,
+    public Department(String name,
                  String leader,
                  Company company) {
         this.name = name;

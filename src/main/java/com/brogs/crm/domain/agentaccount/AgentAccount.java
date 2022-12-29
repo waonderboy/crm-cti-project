@@ -21,8 +21,9 @@ public class AgentAccount extends AbstractEntity {
     private String identifier;
     private String password;
     private String extension;
-    private AccountRoleType role;
     private LocalDateTime lastExpiredAt;
+    @Enumerated(EnumType.STRING)
+    private AccountRoleType role;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "agentAccount") // 관계의 주인을 명시, 주인에서만 수정 삭제 가능
     private Set<AgentProfile> agentProfiles;
@@ -30,7 +31,6 @@ public class AgentAccount extends AbstractEntity {
     @Builder
     public AgentAccount(String identifier,
                         String password,
-                        AccountRoleType role,
                         String extension) {
         //TODO : 예외처리 로직
         this.identifier = identifier;
@@ -41,7 +41,11 @@ public class AgentAccount extends AbstractEntity {
         this.agentProfiles = new HashSet<>();
     }
 
+    @Getter
+    @AllArgsConstructor
     public enum AccountRoleType {
-        USER, MANAGER, ADMIN;
+        USER("ROLE_USER"), MANAGER("ROLE_MANAGER"), ADMIN("ROLE_ADMIN");
+
+        private final String description;
     }
 }

@@ -25,7 +25,7 @@ public class AccountInfo {
                     .identifier(entity.getIdentifier())
                     .password(entity.getPassword())
                     .extension(entity.getExtension())
-                    .authorities(Set.of(entity.getRole()))
+                    .authorities(Set.of(entity.getRole().toString()))
                     .build();
         }
     }
