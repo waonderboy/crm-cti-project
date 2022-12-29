@@ -38,6 +38,7 @@ public class JwtFilter extends OncePerRequestFilter {
         String accessToken = resolveToken(request, AUTHORIZATION_HEADER);
 
         try {
+
             if (isValidToken(accessToken)) {
                 Authentication authentication = tokenProvider.getAuthentication(accessToken);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -45,7 +46,8 @@ public class JwtFilter extends OncePerRequestFilter {
                 log.info("Security Context 에 {} 인증 정보를 저장했습니다", authentication.getName());
             }
 
-        } catch(ExpiredJwtException ex) {
+        } catch (ExpiredJwtException ex) {
+
             String requestUri = request.getRequestURI();
             String refreshToken = resolveToken(request, REFRESH_TOKEN_HEADER);
             log.info("토큰 갱신 요청으로 인해 토큰 검증을 시작합니다. requestUri={}", requestUri);
@@ -59,6 +61,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 log.info("리프레시 토큰 만료");
                 throw new InvalidCredentialsException("다시 로그인 해 주세요.", ErrorCode.EXPIRED_REFRESH_TOKEN);
             }
+            
         }
 
         log.info("next filter start");
@@ -70,12 +73,12 @@ public class JwtFilter extends OncePerRequestFilter {
         if (StringUtils.hasText(rawToken)) { return getBearerToken(rawToken); }
         if (header == AUTHORIZATION_HEADER) { return null; }
 
-        throw new InvalidCredentialsException("잘못된 타입이거나, 토큰이 없습니다.", ErrorCode.INVALID_CREDENTIALS);
+        throw new InvalidCredentialsException("액세스 토큰이 만료되었습니다.", ErrorCode.EXPIRED_ACCESS_TOKEN);
     }
 
     private String getBearerToken(String bearerToken) {
         if (!bearerToken.startsWith(BEARER)) {
-            throw new InvalidCredentialsException("잘못된 타입이거나, 토큰이 없습니다.", ErrorCode.INVALID_CREDENTIALS);
+            throw new InvalidCredentialsException("유효한 토큰이 아닙니다.", ErrorCode.INVALID_CREDENTIALS);
         }
         return bearerToken.substring(7);
     }
@@ -90,6 +93,4 @@ public class JwtFilter extends OncePerRequestFilter {
         request.setAttribute("refreshToken", refreshToken);
         request.setAttribute("subject", subject);
     }
-
-
 }

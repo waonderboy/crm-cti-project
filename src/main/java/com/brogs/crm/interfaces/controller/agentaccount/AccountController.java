@@ -4,6 +4,7 @@ import com.brogs.crm.common.response.CommonResponse;
 import com.brogs.crm.domain.agentaccount.AccountInfo;
 import com.brogs.crm.domain.agentaccount.AccountService;
 import io.jsonwebtoken.Claims;
+import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,8 +37,8 @@ public class AccountController {
     }
 
     @GetMapping("/refresh-token")
-    public CommonResponse refreshToken(@RequestAttribute String refreshToken,
-                                       @RequestAttribute String subject) {
+    public CommonResponse refreshToken(@RequestAttribute @Nullable String refreshToken,
+                                       @RequestAttribute @Nullable String subject) {
 
         var renewTokens = accountService.refreshAccessToken(subject, refreshToken);
         return CommonResponse.success(renewTokens);
