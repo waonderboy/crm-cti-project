@@ -1,7 +1,7 @@
 package com.brogs.crm.domain.agentinfo;
 
 import com.brogs.crm.domain.AbstractEntity;
-import com.brogs.crm.domain.group.Group;
+import com.brogs.crm.domain.department.Department;
 import com.brogs.crm.domain.Ticket;
 import com.brogs.crm.domain.agentaccount.AgentAccount;
 import jakarta.persistence.*;
@@ -37,8 +37,8 @@ public class AgentProfile extends AbstractEntity {
     private AgentAccount agentAccount;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "group_id")
-    private Group group;
+    @JoinColumn(name = "department_id")
+    private Department department;
 
     @OneToOne(mappedBy = "agentProfile")
     private Ticket ticket;
