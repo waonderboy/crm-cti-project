@@ -1,7 +1,7 @@
-package com.brogs.crm.domain.manual;
+package com.brogs.crm.domain.etc.manual;
 
 import com.brogs.crm.domain.AbstractEntity;
-import com.brogs.crm.domain.hashtag.Hashtag;
+import com.brogs.crm.domain.etc.hashtag.Hashtag;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;

@@ -1,4 +1,4 @@
-package com.brogs.crm.domain.macro;
+package com.brogs.crm.domain.etc.macro;
 
 import com.brogs.crm.domain.agentaccount.AgentAccount;
 import jakarta.persistence.*;

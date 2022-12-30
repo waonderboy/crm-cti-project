@@ -19,5 +19,5 @@ logging:
 
 jwt:
   header: Authorization
-  token-validity-in-seconds: 15000
-  refresh-validity-in-seconds: 100000
+  token-validity-in-seconds: 150000
+  refresh-validity-in-seconds: 1000000

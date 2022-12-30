@@ -1,7 +1,7 @@
 package com.brogs.crm.domain.department;
 
 import com.brogs.crm.domain.AbstractEntity;
-import com.brogs.crm.domain.agentinfo.AgentProfile;
+import com.brogs.crm.domain.agentaccount.agentprofile.AgentProfile;
 import com.brogs.crm.domain.company.Company;
 import jakarta.persistence.*;
 import lombok.*;

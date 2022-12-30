@@ -1,10 +1,10 @@
 package com.brogs.crm.domain;
 
-import com.brogs.crm.domain.agentinfo.AgentProfile;
+import com.brogs.crm.domain.agentaccount.agentprofile.AgentProfile;
 import com.brogs.crm.domain.ticket.TicketPriorityType;
 import com.brogs.crm.domain.ticket.TicketStatusType;
 import com.brogs.crm.domain.customer.Customer;
-import com.brogs.crm.domain.hashtag.Hashtag;
+import com.brogs.crm.domain.etc.hashtag.Hashtag;
 import jakarta.persistence.*;
 import lombok.*;
 
