@@ -1,4 +1,4 @@
-package com.brogs.crm.domain.agentinfo;
+package com.brogs.crm.domain.agentaccount.agentprofile;
 
 import com.brogs.crm.domain.AbstractEntity;
 import com.brogs.crm.domain.department.Department;
@@ -8,6 +8,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @EqualsAndHashCode(of = "id", callSuper = false)
 @NoArgsConstructor
@@ -22,10 +23,9 @@ public class AgentProfile extends AbstractEntity {
     private String groupName;
     private String phoneNumber;
     private String address;
-    private String emailCheckToken;
+    private String confirmToken;
     private int age;
-    private boolean expire;
-    private boolean certification;
+    private boolean activated;
     private AgentRankType rank;
     private LocalDateTime tokenGeneratedAt;
 
@@ -50,7 +50,8 @@ public class AgentProfile extends AbstractEntity {
                      AgentRankType rank,
                      String groupName,
                      String phoneNumber,
-                     String address) {
+                     String address,
+                     String profileImage) {
         //TODO: 예외처리
         this.name = name;
         this.email = email;
@@ -59,9 +60,35 @@ public class AgentProfile extends AbstractEntity {
         this.groupName = groupName;
         this.phoneNumber = phoneNumber;
         this.address = address;
-        this.expire = false;
+        this.activated = false;
+        this.profileImage = profileImage;
+    }
+
+    public void activateProfile(boolean activation) {
+        this.activated = activation;
+    }
+
+    public void matchAccount(AgentAccount agentAccount) {
+        this.agentAccount = agentAccount;
+        agentAccount.getAgentProfiles().add(this);
+    }
+
+    public void generateConfirmToken() {
+        this.confirmToken = UUID.randomUUID().toString();
         this.tokenGeneratedAt = LocalDateTime.now();
-        this.certification = false;
+    }
+
+    public boolean checkConfirmToken(String token) {
+        return this.confirmToken.equals(token);
+    }
+
+    @Getter
+    @AllArgsConstructor
+    public enum AgentRankType {
+        // example
+        MANAGER("팀장"), SUPERVISOR("주임"), STAFF("사원");
+
+        private final String description;
     }
 
 }
