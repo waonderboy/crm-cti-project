@@ -1,8 +1,8 @@
-package com.brogs.crm.security.jwt;
+package com.brogs.crm.common.security.jwt;
 
+import com.brogs.crm.common.exception.ExpiredCredentialsException;
 import com.brogs.crm.common.exception.InvalidCredentialsException;
 import com.brogs.crm.common.response.ErrorCode;
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -17,9 +17,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Optional;
-
-import static org.springframework.util.StringUtils.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -59,7 +56,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 }
             } catch (ExpiredJwtException e) {
                 log.info("리프레시 토큰 만료");
-                throw new InvalidCredentialsException("다시 로그인 해 주세요.", ErrorCode.EXPIRED_REFRESH_TOKEN);
+                throw new ExpiredCredentialsException("다시 로그인 해 주세요.", ErrorCode.EXPIRED_REFRESH_TOKEN);
             }
             
         }

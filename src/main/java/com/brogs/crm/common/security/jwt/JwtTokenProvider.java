@@ -1,4 +1,4 @@
-package com.brogs.crm.security.jwt;
+package com.brogs.crm.common.security.jwt;
 
 import com.brogs.crm.common.AccountPrincipal;
 import com.brogs.crm.common.exception.InvalidCredentialsException;
@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 public class JwtTokenProvider implements InitializingBean {
 
     private static final String AUTHORITIES_KEY = "auth";
+    private static final String HAS_PROFILE = "hasProfile";
     private final String secret;
     private final long tokenValidityInSeconds;
     private final long refreshValidityInSeconds;
@@ -46,19 +47,23 @@ public class JwtTokenProvider implements InitializingBean {
      * authentication 객체를 이용해 최초 로그인시 발급하는 토큰 AccessToken, RefreshToken
      */
     public JwtTokens createJwtTokens(Authentication authentication) {
-        String authorities = authentication.getAuthorities().stream()
+        var principal = (AccountPrincipal) authentication.getPrincipal();
+        var hasProfile = principal.isHasProfile();
+        var authorities = principal.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
 
-        Date accessTokenExpirationDate = getAccessTokenExpirationDate(getCurrentTime());
-        String accessToken = createToken(
+        var accessTokenExpirationDate = getAccessTokenExpirationDate(getCurrentTime());
+        var accessToken = createToken(
                 authentication.getName(),
+                hasProfile,
                 authorities,
                 accessTokenExpirationDate);
 
-        Date refreshTokenExpirationDate = getRefreshTokenExpirationDate(getCurrentTime());
-        String refreshToken = createToken(
+        var refreshTokenExpirationDate = getRefreshTokenExpirationDate(getCurrentTime());
+        var refreshToken = createToken(
                 authentication.getName(),
+                hasProfile,
                 authorities,
                 refreshTokenExpirationDate);
 
@@ -69,16 +74,18 @@ public class JwtTokenProvider implements InitializingBean {
      * AccessToken 은 과 만료된 AccessToken 과 RefreshToken 으로 인해 갱신됨
      */
     public JwtTokens renewJwtTokens(String refreshToken) {
-        Claims claims = parseClaims(refreshToken);
-        Date accessTokenExpirationDate = getAccessTokenExpirationDate(getCurrentTime());
-        String renewedAccessToken = createToken(
+        var claims = parseClaims(refreshToken);
+        var accessTokenExpirationDate = getAccessTokenExpirationDate(getCurrentTime());
+        var renewedAccessToken = createToken(
                 claims.getSubject(),
+                (Boolean) claims.get(HAS_PROFILE),
                 claims.get(AUTHORITIES_KEY).toString(),
                 accessTokenExpirationDate);
 
-        Date refreshTokenExpirationDate = getRefreshTokenExpirationDate(getCurrentTime());
-        String renewedRefreshToken = createToken(
+        var refreshTokenExpirationDate = getRefreshTokenExpirationDate(getCurrentTime());
+        var renewedRefreshToken = createToken(
                 claims.getSubject(),
+                (Boolean) claims.get(HAS_PROFILE),
                 claims.get(AUTHORITIES_KEY).toString(),
                 refreshTokenExpirationDate);
 
@@ -89,13 +96,13 @@ public class JwtTokenProvider implements InitializingBean {
      * AccessToken 을 파싱해서 SecurityContext 에 저장할 Authentication 객체 생성 (세션 관리 필요없음)
      */
     public Authentication getAuthentication(String token) {
-        Claims claims = parseClaims(token);
-        Collection<? extends GrantedAuthority> authorities = Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
+        var claims = parseClaims(token);
+        var authorities = Arrays.stream(
+                        claims.get(AUTHORITIES_KEY).toString().split(","))
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toSet());
-        AccountPrincipal accountPrincipal = new AccountPrincipal(claims.getSubject(), null, authorities);
 
-        return new UsernamePasswordAuthenticationToken(accountPrincipal, token, authorities);
+        return new UsernamePasswordAuthenticationToken(createPrincipal(claims, authorities), token, authorities);
     }
 
     public boolean validateToken(String token) {
@@ -110,18 +117,27 @@ public class JwtTokenProvider implements InitializingBean {
     /**
      * TokenProvider 내부 메서드
      */
-    private String createToken(String username, String authorities, Date expirationDate) {
+    private String createToken(String username, boolean hasProfile, String authorities, Date expirationDate) {
         return Jwts.builder()
                 .setSubject(username)
                 .claim(AUTHORITIES_KEY, authorities)
+                .claim(HAS_PROFILE, hasProfile)
                 .signWith(key, SignatureAlgorithm.HS512)
                 .setExpiration(expirationDate)
                 .compact();
     }
 
+    private AccountPrincipal createPrincipal(Claims claims, Set<SimpleGrantedAuthority> authorities) {
+        return AccountPrincipal.builder()
+                .identifier(claims.getSubject())
+                .hasProfile((Boolean) claims.get(HAS_PROFILE))
+                .password(null)
+                .authorities(authorities)
+                .build();
+    }
+
     private Claims parseClaims(String token) {
-        try {
-            return Jwts.parserBuilder()
+        try { return Jwts.parserBuilder()
                     .setSigningKey(key)
                     .build()
                     .parseClaimsJws(token)
