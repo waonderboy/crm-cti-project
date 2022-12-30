@@ -1,4 +1,4 @@
-package com.brogs.crm.domain.hashtag;
+package com.brogs.crm.domain.etc.hashtag;
 
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;

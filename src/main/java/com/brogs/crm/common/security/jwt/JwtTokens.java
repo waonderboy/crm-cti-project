@@ -1,6 +1,5 @@
-package com.brogs.crm.security.jwt;
+package com.brogs.crm.common.security.jwt;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.util.Date;

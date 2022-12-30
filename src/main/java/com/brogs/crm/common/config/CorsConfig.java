@@ -1,4 +1,4 @@
-package com.brogs.crm.config;
+package com.brogs.crm.common.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

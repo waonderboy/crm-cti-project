@@ -1,7 +1,7 @@
-package com.brogs.crm.security;
+package com.brogs.crm.common.security;
 
-import com.brogs.crm.security.jwt.JwtSecurityConfig;
-import com.brogs.crm.security.jwt.JwtTokenProvider;
+import com.brogs.crm.common.security.jwt.JwtSecurityConfig;
+import com.brogs.crm.common.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

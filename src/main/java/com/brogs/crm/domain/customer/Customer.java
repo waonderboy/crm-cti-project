@@ -1,8 +1,8 @@
 package com.brogs.crm.domain.customer;
 
 import com.brogs.crm.domain.AbstractEntity;
-import com.brogs.crm.domain.agentinfo.AgentProfile;
-import com.brogs.crm.domain.hashtag.Hashtag;
+import com.brogs.crm.domain.agentaccount.agentprofile.AgentProfile;
+import com.brogs.crm.domain.etc.hashtag.Hashtag;
 import jakarta.persistence.*;
 import lombok.*;
 

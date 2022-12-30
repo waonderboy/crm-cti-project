@@ -13,14 +13,14 @@ import lombok.extern.slf4j.Slf4j;
 @AllArgsConstructor
 public class CommonResponse<T> {
 
-    private Success result;
+    private boolean result;
     private T data;
     private String message;
     private String errorCode;
 
     public static <T> CommonResponse<T> success(T data, String message){
         return (CommonResponse<T>) CommonResponse.builder()
-                .result(Success.TRUE)
+                .result(true)
                 .data(data)
                 .message(message)
                 .build();
@@ -32,7 +32,7 @@ public class CommonResponse<T> {
 
     public static CommonResponse fail(String message, String errorCode) {
         return CommonResponse.builder()
-                .result(Success.FALSE)
+                .result(false)
                 .message(message)
                 .errorCode(errorCode)
                 .build();
@@ -41,13 +41,10 @@ public class CommonResponse<T> {
     public static CommonResponse fail(ErrorCode errorCode) {
 
         return CommonResponse.builder()
-                .result(Success.FALSE)
+                .result(false)
                 .message(errorCode.getErrorMsg())
                 .errorCode(errorCode.name())
                 .build();
     }
 
-    public enum Success {
-        TRUE, FALSE
-    }
 }
