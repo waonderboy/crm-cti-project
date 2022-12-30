@@ -1,7 +1,7 @@
 package com.brogs.crm.domain.agentaccount;
 
 import com.brogs.crm.domain.AbstractEntity;
-import com.brogs.crm.domain.agentinfo.AgentProfile;
+import com.brogs.crm.domain.agentaccount.agentprofile.AgentProfile;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,7 +21,9 @@ public class AgentAccount extends AbstractEntity {
     private String identifier;
     private String password;
     private String extension;
+    private boolean hasProfile;
     private LocalDateTime lastExpiredAt;
+
     @Enumerated(EnumType.STRING)
     private AccountRoleType role;
 
@@ -37,6 +39,7 @@ public class AgentAccount extends AbstractEntity {
         this.password = password;
         this.role = AccountRoleType.USER;
         this.extension = extension;
+        this.hasProfile = false;
         this.lastExpiredAt = LocalDateTime.now();
         this.agentProfiles = new HashSet<>();
     }
