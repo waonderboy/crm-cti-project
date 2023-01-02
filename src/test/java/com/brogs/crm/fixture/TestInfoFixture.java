@@ -8,6 +8,8 @@ import com.brogs.crm.domain.externalmessenger.SendMethod;
 import com.brogs.crm.interfaces.controller.agentaccount.AccountDto;
 
 import java.util.Date;
+import java.util.Set;
+import java.util.UUID;
 
 public class TestInfoFixture {
 
@@ -76,13 +78,79 @@ public class TestInfoFixture {
     public static AccountDto.ProfileRes setProfileRes() {
         AccountDto.ProfileRes setProfileRes = new AccountDto.ProfileRes();
         setProfileRes.setName("test");
-        setProfileRes.setAge("24");
+        setProfileRes.setAge(24);
         setProfileRes.setEmail("test@test.com");
         setProfileRes.setActivated(false);
         return setProfileRes;
     }
 
-    public static JwtTokens createJwtTokens() {
-        return JwtTokens.of("aa", "vv", new Date(), new Date());
+    /**
+     * Agent Profile 확인 토큰 발급
+     */
+    public static AccountDto.ConfirmTokenReq confirmToken() {
+        AccountDto.ConfirmTokenReq confirmTokenReq = new AccountDto.ConfirmTokenReq();
+        confirmTokenReq.setEmail("test@test.com");
+        confirmTokenReq.setToken(UUID.randomUUID().toString());
+        return confirmTokenReq;
+    }
+
+
+    /**
+     * [Info 객체] Account 전체 정보 조회 (with Agent profile)
+     */
+    public static AccountInfo.Main accountWithProfile() {
+        return AccountInfo.Main.builder()
+                .identifier("test")
+                .extension("999-9999")
+                .authorities(Set.of("ROLE_USER"))
+                .hasProfile(true)
+                .agentInfo(agentProfile())
+                .build();
+    }
+
+    /**
+     * [Info 객체] Agent profile 조회
+     */
+    public static AccountInfo.AgentInfo agentProfile() {
+        return AccountInfo.AgentInfo.builder()
+                .name("kim")
+                .profileImage(null)
+                .email("test@test.com")
+                .age(24)
+                .phoneNumber("010-0000-0000")
+                .address(null)
+                .groupName("Custom Servbice")
+                .confirmToken("asdf")
+                .activated(true)
+                .build();
+    }
+
+    /**
+     * [Res 객체] Account 전체 정보 조회 (with Agent profile)
+     */
+    public static AccountDto.AccountInfoRes accountInfoRes() {
+        AccountDto.AccountInfoRes res = new AccountDto.AccountInfoRes();
+        res.setIdentifier("test");
+        res.setExtension("999-9999");
+        res.setAuthorities(Set.of("ROLE_USER"));
+        res.setHasProfile(true);
+        res.setAgentInfo(profileRes());
+        return res;
+    }
+
+    /**
+     * [Res 객체] Agent profile 조회
+     */
+    public static AccountDto.ProfileRes profileRes() {
+        AccountDto.ProfileRes res = new AccountDto.ProfileRes();
+        res.setName("kim");
+        res.setProfileImage(null);
+        res.setEmail("test@test.com");
+        res.setAge(24);
+        res.setPhoneNumber("010-0000-0000");
+        res.setAddress(null);
+        res.setGroupName("Custom Servbice");
+        res.setActivated(true);
+        return res;
     }
 }

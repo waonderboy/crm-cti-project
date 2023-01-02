@@ -68,7 +68,7 @@ public class AccountDto {
         private String name;
         private String profileImage;
         private String email;
-        private String age;
+        private int age;
         private String phoneNumber;
         private String address;
         private String groupName;

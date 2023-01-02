@@ -12,6 +12,16 @@ spring:
     properties:
       hibernate.format_sql: true
 
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: waonderboy@gmail.com
+    password: npdgsoyndqlfftfm
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.timeout: 5000
+      mail.smtp.starttls.enable: true
+
 logging:
   level:
     #org.hibernate.SQL: debug
@@ -19,5 +29,5 @@ logging:
 
 jwt:
   header: Authorization
-  token-validity-in-seconds: 150000
-  refresh-validity-in-seconds: 1000000
+  token-validity-in-seconds: 9900000
+  refresh-validity-in-seconds: 99000000

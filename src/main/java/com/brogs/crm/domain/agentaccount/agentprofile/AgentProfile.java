@@ -1,14 +1,18 @@
 package com.brogs.crm.domain.agentaccount.agentprofile;
 
+import com.brogs.crm.common.exception.InvalidParamException;
 import com.brogs.crm.domain.AbstractEntity;
 import com.brogs.crm.domain.department.Department;
-import com.brogs.crm.domain.Ticket;
+
 import com.brogs.crm.domain.agentaccount.AgentAccount;
+import com.brogs.crm.domain.ticket.Ticket;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 
 @EqualsAndHashCode(of = "id", callSuper = false)
 @NoArgsConstructor
@@ -26,6 +30,7 @@ public class AgentProfile extends AbstractEntity {
     private String confirmToken;
     private int age;
     private boolean activated;
+    private boolean eliminateRequest;
     private AgentRankType rank;
     private LocalDateTime tokenGeneratedAt;
 
@@ -40,7 +45,8 @@ public class AgentProfile extends AbstractEntity {
     @JoinColumn(name = "department_id")
     private Department department;
 
-    @OneToOne(mappedBy = "agentProfile")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ticket_id")
     private Ticket ticket;
 
     @Builder
@@ -53,6 +59,7 @@ public class AgentProfile extends AbstractEntity {
                      String address,
                      String profileImage) {
         //TODO: 예외처리
+        if (!StringUtils.hasText(email)) { throw new InvalidParamException("이메일은 필수입니다."); }
         this.name = name;
         this.email = email;
         this.age = age;
@@ -61,8 +68,13 @@ public class AgentProfile extends AbstractEntity {
         this.phoneNumber = phoneNumber;
         this.address = address;
         this.activated = false;
+        this.eliminateRequest = false;
         this.profileImage = profileImage;
     }
+    public void setEliminateRequest(boolean request) {
+        this.eliminateRequest = request;
+    }
+
 
     public void activateProfile(boolean activation) {
         this.activated = activation;
@@ -74,7 +86,7 @@ public class AgentProfile extends AbstractEntity {
     }
 
     public void generateConfirmToken() {
-        this.confirmToken = UUID.randomUUID().toString();
+        this.confirmToken = String.valueOf(ThreadLocalRandom.current().nextInt(100000, 1000000));
         this.tokenGeneratedAt = LocalDateTime.now();
     }
 

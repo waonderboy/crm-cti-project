@@ -44,6 +44,10 @@ public class AgentAccount extends AbstractEntity {
         this.agentProfiles = new HashSet<>();
     }
 
+    public void setHasProfile(boolean hasProfile) {
+        this.hasProfile = hasProfile;
+    }
+
     @Getter
     @AllArgsConstructor
     public enum AccountRoleType {
