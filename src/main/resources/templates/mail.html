@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+<div style="margin:100px;">
+  <h1> We are Military Bros. 프로필 인증 메일입니다.</h1>
+  <br>
+  <p> 아래 토큰을 복사한 뒤 프로필 인증으로 가서 입력해주세요.</p>
+  <br>
+
+  <div style="border:1px solid black; font-family:verdana;">
+    <h3 style="color:blue"> 해당 이메일이 맞는지 확인해 주세요. </h3>
+    <div style="font-size:130%" th:text="${email}"> </div>
+    <br>
+    <h3 style="color:blue"> 회원가입 인증 토큰 입니다. </h3>
+    <div style="font-size:130%" th:text="${token}"> </div>
+  </div>
+
+</div>
+
+</body>
+</html>

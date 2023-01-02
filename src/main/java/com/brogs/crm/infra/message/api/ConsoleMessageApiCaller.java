@@ -19,7 +19,7 @@ public class ConsoleMessageApiCaller implements MessageApiCaller{
     @Override
     public void sendConfirmMail(AccountCommand.RegisterProfile request, String confirmToken) {
         log.info("Console Message API Called !!");
-        log.info("Send Confirm Token[ {} ] to User Email[ {} ]", confirmToken, request.getEmail());
+        log.info("인증코드 전송이 시작됩니다 console: [ {} ], code: [ {} }", request.getEmail(), confirmToken);
 
     }
 }
