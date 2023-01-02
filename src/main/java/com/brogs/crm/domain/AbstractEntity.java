@@ -4,6 +4,8 @@ import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -19,8 +21,8 @@ import java.time.LocalDateTime;
 public class AbstractEntity {
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    @CreatedDate
-    //@Column(nullable = false, updatable = false)
+    @CreationTimestamp
+    @Column(nullable = false, updatable = false)
     protected LocalDateTime createdAt;
 
     @CreatedBy
@@ -28,8 +30,8 @@ public class AbstractEntity {
     protected String createdBy;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    @LastModifiedDate
-    //@Column(nullable = false)
+    @UpdateTimestamp
+    @Column(nullable = false)
     protected LocalDateTime modifiedAt;
 
     @LastModifiedBy

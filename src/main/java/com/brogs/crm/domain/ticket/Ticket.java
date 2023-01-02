@@ -1,5 +1,6 @@
-package com.brogs.crm.domain;
+package com.brogs.crm.domain.ticket;
 
+import com.brogs.crm.domain.AbstractEntity;
 import com.brogs.crm.domain.agentaccount.agentprofile.AgentProfile;
 import com.brogs.crm.domain.ticket.TicketPriorityType;
 import com.brogs.crm.domain.ticket.TicketStatusType;
@@ -27,7 +28,7 @@ public class Ticket extends AbstractEntity {
     private TicketPriorityType priority;
 
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
@@ -44,7 +45,7 @@ public class Ticket extends AbstractEntity {
             joinColumns = @JoinColumn(name = "ticket_id"),
             inverseJoinColumns = @JoinColumn(name = "hashtag_id")
     )
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     private Set<Hashtag> hashtags = new LinkedHashSet<>();
 
     @Builder

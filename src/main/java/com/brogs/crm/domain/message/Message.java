@@ -1,6 +1,6 @@
 package com.brogs.crm.domain.message;
 
-import com.brogs.crm.domain.Ticket;
+import com.brogs.crm.domain.ticket.Ticket;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
