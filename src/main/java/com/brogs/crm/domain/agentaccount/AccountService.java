@@ -10,6 +10,8 @@ import com.brogs.crm.domain.agentaccount.agentprofile.AgentProfile;
 import com.brogs.crm.domain.agentaccount.agentprofile.AgentProfileDao;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -36,7 +38,8 @@ public class AccountService implements UserDetailsService {
     @Transactional
     public AccountInfo.Register register(AccountCommand.RegisterAccount registerAccount) {
         accountDao.findByIdentifier(registerAccount.getIdentifier()).ifPresent(e -> {
-            throw new InvalidParamException(ErrorCode.ALREADY_EXISTENT_ACCOUNT);});
+            throw new InvalidParamException(ErrorCode.ALREADY_EXISTENT_ACCOUNT);
+        });
 
         var initAgentAccount = registerAccount.toEntity(passwordEncoder.encode(registerAccount.getPassword()));
         return AccountInfo.Register.from(accountDao.save(initAgentAccount));
@@ -66,8 +69,11 @@ public class AccountService implements UserDetailsService {
 
     @Transactional
     public AccountInfo.AgentInfo registerProfile(String identifier, AccountCommand.RegisterProfile registerProfile) {
-        var agentAccount = accountDao.findByIdentifier(identifier)
-                .orElseThrow(() -> new UsernameNotFoundException("없는 유저입니다."));
+        agentProfileDao.findByEmail(registerProfile.getEmail()).ifPresent(e -> {
+            throw new InvalidParamException(ErrorCode.ALREADY_EXISTENT_ACCOUNT);
+        });
+
+        var agentAccount = getAgentAccount(identifier);
         var initAgentProfile = registerProfile.toEntity();
         var agentProfile = agentProfileDao.save(initAgentProfile);
 
@@ -75,7 +81,6 @@ public class AccountService implements UserDetailsService {
         agentProfile.matchAccount(agentAccount);
         return AccountInfo.AgentInfo.from(agentProfile);
     }
-
 
 
     public JwtTokens refreshAccessToken(String subject, String refreshToken) {
@@ -87,32 +92,59 @@ public class AccountService implements UserDetailsService {
         return tokenProvider.renewJwtTokens(refreshToken);
     }
 
+    @Transactional
     public void activateProfile(String email, String token) {
-        var agentProfile = agentProfileDao.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 프로필입니다."));
-
+        var agentProfile = getAgentProfile(email);
         validateConfirmToken(token, agentProfile);
+
         agentProfile.activateProfile(true);
+        agentProfile.getAgentAccount().setHasProfile(true);
     }
 
-    public void validateConfirmToken(String token, AgentProfile agentProfile) {
-        if (!agentProfile.checkConfirmToken(token)
-                || LocalDateTime.now().isAfter(agentProfile.getTokenGeneratedAt().plusMinutes(5))) {
-            throw new InvalidParamException("프로필 인증 토큰이 유효하지 않습니다");
-        }
-    }
-
-    // 역참조 스트림으로
     public AccountInfo.Main getAccountInfo(String identifier) {
-        var agentAccount = accountDao.findByIdentifier(identifier)
-                .orElseThrow(() -> new UsernameNotFoundException("없는 유저입니다."));
+        var agentAccount = getAgentAccount(identifier);
         var agentProfile = agentAccount.getAgentProfiles()
                 .stream()
-                .filter(profile -> profile.isActivated())
+                .filter(AgentProfile::isActivated)
                 .findFirst()
                 .orElse(null);
 
         return agentProfile != null ? AccountInfo.Main.from(agentAccount, agentProfile)
                 : AccountInfo.Main.from(agentAccount);
     }
+
+
+    @Transactional
+    public void requestDeleteProfile(String email) {
+        var agentProfile = getAgentProfile(email);
+        agentProfile.setEliminateRequest(true);
+    }
+
+    public Page<AccountInfo.AgentInfo> getAccountProfiles(String identifier, Pageable pageable) {
+        var accountId = getAgentAccount(identifier).getId();
+        return agentProfileDao.findByAgentAccountId(accountId, pageable)
+                .map(AccountInfo.AgentInfo::from);
+    }
+
+    /**
+     * 서비스 내부 메소드
+     */
+    private void validateConfirmToken(String token, AgentProfile agentProfile) {
+        if (!agentProfile.checkConfirmToken(token)
+                || LocalDateTime.now().isAfter(agentProfile.getTokenGeneratedAt().plusMinutes(5))) {
+            throw new InvalidParamException("프로필 인증 토큰이 유효하지 않습니다");
+        }
+    }
+
+    private AgentAccount getAgentAccount(String identifier) {
+        return accountDao.findByIdentifier(identifier)
+                .orElseThrow(() -> new UsernameNotFoundException("없는 유저입니다."));
+    }
+
+    private AgentProfile getAgentProfile(String email) {
+        return agentProfileDao.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 프로필입니다."));
+    }
+
+
 }

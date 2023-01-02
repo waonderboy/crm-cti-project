@@ -6,14 +6,10 @@ import com.brogs.crm.common.exception.InvalidParamException;
 import com.brogs.crm.common.response.ErrorCode;
 import com.brogs.crm.config.TestSecurityConfig;
 import com.brogs.crm.domain.agentaccount.*;
-import com.brogs.crm.fixture.TestInfoFixture;
 import com.brogs.crm.interfaces.controller.agentaccount.AccountController;
 import com.brogs.crm.interfaces.controller.agentaccount.AccountDto;
 import com.brogs.crm.interfaces.controller.agentaccount.AccountDtoMapper;
-import com.brogs.crm.common.security.jwt.JwtTokens;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.Getter;
-import lombok.Setter;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,17 +17,15 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.event.annotation.BeforeTestMethod;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.util.Date;
-import java.util.UUID;
 
 import static com.brogs.crm.fixture.TestInfoFixture.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.*;
-import static org.mockito.Mockito.doNothing;
+
 import static org.mockito.Mockito.mock;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -162,7 +156,7 @@ class AccountControllerTest {
         willDoNothing().given(accountFacade).activateProfile(anyString(), anyString());
 
         // When
-        mvc.perform(post("/api/v1/account/check-confirm-token")
+        mvc.perform(post("/api/v1/account/profile/check-confirm-token")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(confirmToken())))
                 .andDo(print())
@@ -175,9 +169,9 @@ class AccountControllerTest {
 
 
     @WithMockCurrentAccount(identifier = "test", role = "ROLE_USER")
-    @DisplayName("[GET] 계정 조회 - 성공")
+    @DisplayName("[GET] 계정 프로필 조회 - 연결된 프로필 없음")
     @Test
-    public void AccountId_RequestAccountInfo_ReturnAccountDetails() throws Exception {
+    public void AccountId_RequestAccountInfo_ReturnNoProfile() throws Exception {
         // Given
         given(accountFacade.getAccountInfo(anyString())).willReturn(mock(AccountInfo.Main.class));
 
@@ -186,17 +180,51 @@ class AccountControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("result").value(true))
-                .andExpect(jsonPath("data.email").exists());
+                .andExpect(jsonPath("data").isEmpty());
 
         // Then
         then(accountFacade).should().getAccountInfo(any());
     }
 
+    @WithMockCurrentAccount(identifier = "test", role = "ROLE_USER")
+    @DisplayName("[GET] 계정 정보 조회 - 연결된 프로필 존재")
+    @Test
+    public void AccountId_RequestAccountInfo_ReturnAccountDetails() throws Exception {
+        // Given
+        given(accountFacade.getAccountInfo(anyString())).willReturn(accountWithProfile());
+        given(accountDtoMapper.of((AccountInfo.Main) any())).willReturn(accountInfoRes());
 
-    private AccountDto.ConfirmTokenReq confirmToken() {
-        AccountDto.ConfirmTokenReq confirmTokenReq = new AccountDto.ConfirmTokenReq();
-        confirmTokenReq.setEmail("test@test.com");
-        confirmTokenReq.setToken(UUID.randomUUID().toString());
-        return confirmTokenReq;
+        // When
+        mvc.perform(get("/api/v1/account/me"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("result").value(true))
+                .andExpect(jsonPath("data.identifier").value("test"))
+                .andExpect(jsonPath("data.authorities").value("ROLE_USER"))
+                .andExpect(jsonPath("data.agentInfo").hasJsonPath());
+
+        // Then
+        then(accountFacade).should().getAccountInfo(any());
     }
+
+    @WithMockCurrentAccount(identifier = "test", role = "ROLE_USER")
+    @DisplayName("[GET] 계정과 연결된 모든 프로필 조회 - 성공")
+    @Test
+    public void dNothing_RequestDeletingProfile_DoNothing() throws Exception {
+        // Given
+        given(accountFacade.getAccountProfiles(any(), any(Pageable.class))).willReturn(Page.empty());
+
+        // When
+        mvc.perform(get("/api/v1/account/profile"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("result").value(true))
+                .andExpect(jsonPath("data.content").exists());
+
+        // Then
+        then(accountFacade).should().getAccountProfiles(any(), any(Pageable.class));
+    }
+
+
+
 }
