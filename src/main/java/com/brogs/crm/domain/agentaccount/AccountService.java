@@ -23,12 +23,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class AccountService implements UserDetailsService {
+    private static final String EMAIL_NONE = "None";
     private final AccountDao accountDao;
     private final AgentProfileDao agentProfileDao;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
@@ -61,10 +63,10 @@ public class AccountService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String identifier) throws UsernameNotFoundException {
-        return accountDao.findByIdentifier(identifier)
-                .map(AccountInfo.Main::from)
-                .map(AccountPrincipal::from)
-                .orElseThrow(() -> new UsernameNotFoundException("해당 유저가 존재하지 않습니다."));
+        var accountInfo = getAccountInfo(identifier);
+        var agentInfo = accountInfo.getAgentInfo();
+        return agentInfo != null ? AccountPrincipal.from(accountInfo, agentInfo.getEmail()) :
+                AccountPrincipal.from(accountInfo, EMAIL_NONE);
     }
 
     @Transactional

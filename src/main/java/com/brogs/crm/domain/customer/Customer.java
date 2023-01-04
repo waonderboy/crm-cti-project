@@ -22,15 +22,13 @@ public class Customer extends AbstractEntity {
     private String memo;
     private String email;
     private String phoneNumber;
-    private String facebookId;
-    private String instagramId;
-    private String kakaoTalkId;
+    private String snsId;
+    private SnsType snsType;
     private boolean emailReception;
     private boolean smsReception;
     private boolean callReception;
-    private boolean facebookReception;
-    private boolean instagramReception;
-    private boolean kakaoTalkReception;
+    private boolean snsReception;
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "agent_profile_id")
@@ -47,17 +45,19 @@ public class Customer extends AbstractEntity {
     @Builder
     public Customer(String name,
                     String email,
+                    String address,
+                    String memo,
                     String phoneNumber,
-                    String facebookId,
-                    String instagramId,
-                    String kakaoTalkId) {
+                    String snsId,
+                    SnsType snsType) {
         //TODO: 예외처리
         this.name = name;
         this.email = email;
+        this.address = address;
+        this.memo = memo;
         this.phoneNumber = phoneNumber;
-        this.facebookId = facebookId;
-        this.instagramId = instagramId;
-        this.kakaoTalkId = kakaoTalkId;
+        this.snsId = snsId;
+        this.snsType = snsType;
         this.hashtags = new LinkedHashSet<>();
         defaultReceptionSettings();
     }
@@ -65,8 +65,24 @@ public class Customer extends AbstractEntity {
         this.emailReception = true;
         this.smsReception = true;
         this.callReception = true;
-        this.facebookReception = true;
-        this.instagramReception = true;
-        this.kakaoTalkReception = true;
+    }
+    public void changeCustomerDetails(String name,
+                                      String email,
+                                      String address,
+                                      String memo,
+                                      String phoneNumber,
+                                      String snsId,
+                                      SnsType snsType){
+        this.name = name;
+        this.email = email;
+        this.address = address;
+        this.memo = memo;
+        this.phoneNumber = phoneNumber;
+        this.snsId = snsId;
+        this.snsType = snsType;
+    }
+
+    public enum SnsType {
+        INSTAGRAM, FACEBOOK, KAKAO
     }
 }

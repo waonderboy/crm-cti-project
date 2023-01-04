@@ -37,6 +37,7 @@ public class AccountInfo {
         public static Main from(AgentAccount account, AgentProfile profile) {
             return  Main.builder()
                     .identifier(account.getIdentifier())
+                    .password(account.getPassword())
                     .extension(account.getExtension())
                     .authorities(Set.of(account.getRole().toString()))
                     .hasProfile(account.isHasProfile())

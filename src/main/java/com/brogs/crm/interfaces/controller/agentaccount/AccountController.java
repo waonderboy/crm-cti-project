@@ -69,7 +69,7 @@ public class AccountController {
     @PostMapping("/profile/check-confirm-token")
     public CommonResponse checkConfirmToken(@RequestBody AccountDto.ConfirmTokenReq request) {
         accountFacade.activateProfile(request.getEmail(), request.getToken());
-        return CommonResponse.success("계정이 활성화 되었습니다.");
+        return CommonResponse.success("프로필이 활성화 되었습니다, 로그인을 다시 해주세요");
     }
 
     @GetMapping("/profile/elimination")

@@ -1,4 +1,4 @@
-package com.brogs.crm.domain.foward;
+package com.brogs.crm.domain.etc.foward;
 
 import com.brogs.crm.domain.AbstractEntity;
 import jakarta.persistence.Column;

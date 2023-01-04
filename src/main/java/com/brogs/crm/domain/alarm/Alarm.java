@@ -1,7 +1,7 @@
 package com.brogs.crm.domain.alarm;
 
 import com.brogs.crm.domain.agentaccount.AgentAccount;
-import com.brogs.crm.domain.message.ReadStatusType;
+import com.brogs.crm.domain.ticket.message.ReadStatusType;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;

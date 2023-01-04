@@ -1,4 +1,4 @@
-package com.brogs.crm.domain.message;
+package com.brogs.crm.domain.ticket.message;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
