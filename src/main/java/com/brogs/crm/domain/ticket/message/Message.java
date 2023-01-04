@@ -1,4 +1,4 @@
-package com.brogs.crm.domain.message;
+package com.brogs.crm.domain.ticket.message;
 
 import com.brogs.crm.domain.ticket.Ticket;
 import jakarta.persistence.*;

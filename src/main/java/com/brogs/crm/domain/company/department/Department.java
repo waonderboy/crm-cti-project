@@ -1,4 +1,4 @@
-package com.brogs.crm.domain.department;
+package com.brogs.crm.domain.company.department;
 
 import com.brogs.crm.domain.AbstractEntity;
 import com.brogs.crm.domain.agentaccount.agentprofile.AgentProfile;
