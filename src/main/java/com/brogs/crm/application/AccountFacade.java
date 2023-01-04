@@ -30,7 +30,7 @@ public class AccountFacade {
      */
     public void activateProfile(String email, String confirmToken) {
         accountService.activateProfile(email, confirmToken);
-        // TODO : 알람 서비스로 계정에 프로필이 활성화 됬다고 알림
+        // TODO : 알람 서비스로 계정에 프로필이 활성화 됬다고 알림 - 재 로그인 필요
     }
 
     /**

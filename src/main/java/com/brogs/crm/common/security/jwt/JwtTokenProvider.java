@@ -24,6 +24,7 @@ public class JwtTokenProvider implements InitializingBean {
 
     private static final String AUTHORITIES_KEY = "auth";
     private static final String HAS_PROFILE = "hasProfile";
+    private static final String EMAIL = "email";
     private final String secret;
     private final long tokenValidityInSeconds;
     private final long refreshValidityInSeconds;
@@ -49,6 +50,7 @@ public class JwtTokenProvider implements InitializingBean {
     public JwtTokens createJwtTokens(Authentication authentication) {
         var principal = (AccountPrincipal) authentication.getPrincipal();
         var hasProfile = principal.isHasProfile();
+        var email = principal.getEmail();
         var authorities = principal.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
@@ -58,6 +60,7 @@ public class JwtTokenProvider implements InitializingBean {
                 authentication.getName(),
                 hasProfile,
                 authorities,
+                email,
                 accessTokenExpirationDate);
 
         var refreshTokenExpirationDate = getRefreshTokenExpirationDate(getCurrentTime());
@@ -65,6 +68,7 @@ public class JwtTokenProvider implements InitializingBean {
                 authentication.getName(),
                 hasProfile,
                 authorities,
+                email,
                 refreshTokenExpirationDate);
 
         return JwtTokens.of(accessToken, refreshToken, accessTokenExpirationDate, refreshTokenExpirationDate);
@@ -80,6 +84,7 @@ public class JwtTokenProvider implements InitializingBean {
                 claims.getSubject(),
                 (Boolean) claims.get(HAS_PROFILE),
                 claims.get(AUTHORITIES_KEY).toString(),
+                claims.get(EMAIL).toString(),
                 accessTokenExpirationDate);
 
         var refreshTokenExpirationDate = getRefreshTokenExpirationDate(getCurrentTime());
@@ -87,6 +92,7 @@ public class JwtTokenProvider implements InitializingBean {
                 claims.getSubject(),
                 (Boolean) claims.get(HAS_PROFILE),
                 claims.get(AUTHORITIES_KEY).toString(),
+                claims.get(EMAIL).toString(),
                 refreshTokenExpirationDate);
 
         return JwtTokens.of(renewedAccessToken, renewedRefreshToken, accessTokenExpirationDate, refreshTokenExpirationDate);
@@ -117,11 +123,12 @@ public class JwtTokenProvider implements InitializingBean {
     /**
      * TokenProvider 내부 메서드
      */
-    private String createToken(String username, boolean hasProfile, String authorities, Date expirationDate) {
+    private String createToken(String username, boolean hasProfile, String authorities, String email, Date expirationDate) {
         return Jwts.builder()
                 .setSubject(username)
                 .claim(AUTHORITIES_KEY, authorities)
                 .claim(HAS_PROFILE, hasProfile)
+                .claim(EMAIL, email)
                 .signWith(key, SignatureAlgorithm.HS512)
                 .setExpiration(expirationDate)
                 .compact();
@@ -132,6 +139,7 @@ public class JwtTokenProvider implements InitializingBean {
                 .identifier(claims.getSubject())
                 .hasProfile((Boolean) claims.get(HAS_PROFILE))
                 .password(null)
+                .email(claims.get(EMAIL).toString())
                 .authorities(authorities)
                 .build();
     }

@@ -20,16 +20,20 @@ public class AccountPrincipal implements UserDetails {
     private String password;
     private boolean hasProfile;
     private Collection<? extends GrantedAuthority> authorities;
+    private String email;
 
 
-    public static AccountPrincipal from(AccountInfo.Main info) {
-        return new AccountPrincipal(info.getIdentifier(),
-                info.getPassword(),
-                info.isHasProfile(),
-                info.getAuthorities()
+    public static AccountPrincipal from(AccountInfo.Main info, String email) {
+        return AccountPrincipal.builder()
+                .identifier(info.getIdentifier())
+                .password(info.getPassword())
+                .hasProfile(info.isHasProfile())
+                .authorities(info.getAuthorities()
                         .stream()
                         .map(SimpleGrantedAuthority::new)
-                        .collect(Collectors.toUnmodifiableSet()));
+                        .collect(Collectors.toUnmodifiableSet()))
+                .email(email)
+                .build();
     }
 
 
