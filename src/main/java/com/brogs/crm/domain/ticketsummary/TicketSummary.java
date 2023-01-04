@@ -1,8 +1,7 @@
 package com.brogs.crm.domain.ticketsummary;
 
 import com.brogs.crm.domain.AbstractEntity;
-import com.brogs.crm.domain.ticket.TicketPriorityType;
-import com.brogs.crm.domain.ticket.TicketStatusType;
+import com.brogs.crm.domain.ticket.Ticket;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,8 +17,8 @@ public class TicketSummary extends AbstractEntity {
     private Long id;
     private String title;
     private int score;
-    private TicketStatusType status;
-    private TicketPriorityType priority;
+    private Ticket.TicketStatusType status;
+    private Ticket.TicketPriorityType priority;
 
     @ToString.Exclude
     //@OrderBy("createdAt DESC")
@@ -27,7 +26,7 @@ public class TicketSummary extends AbstractEntity {
     private Set<TicketSummaryComment> ticketSummaryComments = new LinkedHashSet<>();
 
     @Builder
-    public TicketSummary(String title, TicketPriorityType priority, TicketStatusType status, int score) {
+    public TicketSummary(String title, Ticket.TicketPriorityType priority, Ticket.TicketStatusType status, int score) {
         this.title = title;
         this.priority = priority;
         this.status = status;
