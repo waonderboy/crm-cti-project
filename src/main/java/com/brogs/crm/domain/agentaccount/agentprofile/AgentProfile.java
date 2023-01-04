@@ -2,7 +2,7 @@ package com.brogs.crm.domain.agentaccount.agentprofile;
 
 import com.brogs.crm.common.exception.InvalidParamException;
 import com.brogs.crm.domain.AbstractEntity;
-import com.brogs.crm.domain.department.Department;
+import com.brogs.crm.domain.company.department.Department;
 
 import com.brogs.crm.domain.agentaccount.AgentAccount;
 import com.brogs.crm.domain.ticket.Ticket;
@@ -11,7 +11,7 @@ import lombok.*;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 @EqualsAndHashCode(of = "id", callSuper = false)
@@ -45,9 +45,8 @@ public class AgentProfile extends AbstractEntity {
     @JoinColumn(name = "department_id")
     private Department department;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ticket_id")
-    private Ticket ticket;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "agentProfile")
+    private List<Ticket> tickets;
 
     @Builder
     public AgentProfile(String name,
