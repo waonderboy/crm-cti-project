@@ -41,7 +41,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests()
                     .requestMatchers(
                                 "/api/v1/account/join",
-                                "/api/v1/account/login"
+                                "/api/v1/account/login",
+                            "/api/v2/ticket/{ticketId}",
+                            "/stomp/**", // 웹소켓을 위해 허용,
+                            "/customer/question",
+                            "/customer"
                     ).permitAll()
                 .anyRequest().authenticated() //이게 있어야 인증 진행한다
 
