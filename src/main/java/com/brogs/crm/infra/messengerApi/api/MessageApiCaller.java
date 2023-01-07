@@ -1,10 +1,7 @@
-package com.brogs.crm.infra.message.api;
+package com.brogs.crm.infra.messengerApi.api;
 
 import com.brogs.crm.domain.agentaccount.AccountCommand;
-import com.brogs.crm.domain.externalmessenger.SendMethod;
-import jakarta.mail.MessagingException;
-
-import java.io.UnsupportedEncodingException;
+import com.brogs.crm.domain.messagesystem.messenger.SendMethod;
 
 public interface MessageApiCaller {
     boolean support(SendMethod sendMethod);
