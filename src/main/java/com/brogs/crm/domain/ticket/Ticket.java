@@ -62,7 +62,7 @@ public class Ticket extends AbstractEntity {
     }
 
     public void askedBy(Customer customer) {
-        this.customer= customer;
+        if (this.customer == null) { this.customer= customer; }
     }
 
     @Getter
