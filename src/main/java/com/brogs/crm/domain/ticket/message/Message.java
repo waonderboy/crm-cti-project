@@ -41,4 +41,7 @@ public class Message {
         this.sendTime = sendTime;
     }
 
+    public void putInTicket(Ticket ticket) {
+        this.ticket = ticket;
+    }
 }
