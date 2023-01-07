@@ -22,4 +22,14 @@ public class CustomerDapImpl implements CustomerDao {
     public Customer save(Customer customer) {
         return customerRepository.save(customer);
     }
+
+    @Override
+    public Optional<Customer> findBySnsIdAndSnsType(String snsId, Customer.SnsType snsType) {
+        return customerRepository.findBySnsIdAndSnsType(snsId, snsType);
+    }
+
+    @Override
+    public Customer saveAndFlush(Customer customer) {
+        return customerRepository.saveAndFlush(customer);
+    }
 }

@@ -1,9 +1,12 @@
 package com.brogs.crm.domain.ticket;
 
 import com.brogs.crm.domain.customer.Customer;
+import com.brogs.crm.domain.ticket.message.Message;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
+
+import java.time.LocalDateTime;
 
 public class TicketCommand {
 
@@ -52,4 +55,27 @@ public class TicketCommand {
         }
     }
 
+    @Getter
+    @Builder
+    @ToString
+    public static class MatchMessage {
+        private String sender;
+        private String content;
+        private String attachment;
+        private String channel;
+        //private boolean receptionStatus;
+        //private boolean innerMemo;
+        private LocalDateTime sendTime;
+
+        public Message toEntity() {
+            return Message.builder()
+                    .sender(sender)
+                    .content(content)
+                    .attachment(attachment)
+                    .channel(channel)
+                    //.innerMemo(innerMemo)
+                    .sendTime(sendTime)
+                    .build();
+        }
+    }
 }

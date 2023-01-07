@@ -7,4 +7,8 @@ import java.util.Optional;
 
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
     Optional<Customer> findBySnsId(String snsId);
+
+    Optional<Customer> findBySnsIdAndSnsType(String snsId, Customer.SnsType snsType);
+
+    Customer saveAndFlush(Customer customer);
 }

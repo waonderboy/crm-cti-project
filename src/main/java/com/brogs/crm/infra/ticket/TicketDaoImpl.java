@@ -14,12 +14,22 @@ public class TicketDaoImpl implements TicketDao {
     private final TicketRepository ticketRepository;
 
     @Override
-    public void save(Ticket ticket) {
-        ticketRepository.save(ticket);
+    public Ticket save(Ticket ticket) {
+        return ticketRepository.save(ticket);
     }
 
     @Override
     public Optional<Ticket> findById(Long ticketId) {
         return ticketRepository.findById(ticketId);
+    }
+
+    @Override
+    public Optional<Ticket> findByCustomer_id(Long customerId) {
+        return ticketRepository.findByCustomer_id(customerId);
+    }
+
+    @Override
+    public Ticket getReferenceById(Long ticketId) {
+        return ticketRepository.getReferenceById(ticketId);
     }
 }

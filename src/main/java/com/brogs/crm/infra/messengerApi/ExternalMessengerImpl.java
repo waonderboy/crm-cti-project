@@ -1,15 +1,13 @@
-package com.brogs.crm.infra.message;
+package com.brogs.crm.infra.messengerApi;
 
 import com.brogs.crm.common.exception.InvalidParamException;
 import com.brogs.crm.domain.agentaccount.AccountCommand;
-import com.brogs.crm.domain.externalmessenger.ExternalMessenger;
-import com.brogs.crm.infra.message.api.MessageApiCaller;
-import jakarta.mail.MessagingException;
+import com.brogs.crm.domain.messagesystem.messenger.ExternalMessenger;
+import com.brogs.crm.infra.messengerApi.api.MessageApiCaller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 @Slf4j

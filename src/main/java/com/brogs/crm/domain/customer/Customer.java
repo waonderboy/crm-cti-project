@@ -23,6 +23,7 @@ public class Customer extends AbstractEntity {
     private String email;
     private String phoneNumber;
     private String snsId;
+    @Enumerated(EnumType.STRING)
     private SnsType snsType;
     private boolean emailReception;
     private boolean smsReception;
@@ -83,6 +84,8 @@ public class Customer extends AbstractEntity {
     }
 
     public enum SnsType {
-        INSTAGRAM, FACEBOOK, KAKAO
+        INSTAGRAM,
+        FACEBOOK,
+        KAKAO;
     }
 }
